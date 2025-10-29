@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { getWindPowerExplanation, getBladeLengthExplanation, getBladeCurvatureExplanation } from '../services/geminiService';
+import { getWindPowerExplanation, getBladeLengthExplanation, getBladeCurvatureExplanation } from '../services/geminiService.ts';
 
 interface ExplanationProps {
     comparisonMode: 'none' | 'length' | 'curvature';

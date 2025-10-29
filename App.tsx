@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
-import WindTurbine from './components/WindTurbine';
-import ControlPanel from './components/ControlPanel';
-import PowerOutput from './components/PowerOutput';
-import Explanation from './components/Explanation';
+import WindTurbine from './components/WindTurbine.tsx';
+import ControlPanel from './components/ControlPanel.tsx';
+import PowerOutput from './components/PowerOutput.tsx';
+import Explanation from './components/Explanation.tsx';
 
 type ComparisonMode = 'none' | 'length' | 'curvature';
 
