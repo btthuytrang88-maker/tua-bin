@@ -11,7 +11,7 @@ const ApiKeyPrompt: React.FC<ApiKeyPromptProps> = ({ onSelectKey }) => {
                 <h1 className="text-3xl font-bold text-slate-800 mb-4">Chào mừng bạn!</h1>
                 <p className="text-slate-600 mb-6">
                     Ứng dụng này sử dụng API của Google Gemini để cung cấp các giải thích thông minh.
-                    Để tiếp tục, vui lòng chọn API Key của bạn.
+                    Vì lý do bảo mật, bạn cần chọn API key thông qua hộp thoại an toàn của Google.
                 </p>
                 <button
                     onClick={onSelectKey}
@@ -20,7 +20,18 @@ const ApiKeyPrompt: React.FC<ApiKeyPromptProps> = ({ onSelectKey }) => {
                 >
                     Chọn API Key
                 </button>
-                <p className="text-xs text-slate-500 mt-4">
+                <p className="text-sm text-slate-500 mt-6">
+                    Nếu chưa có API Key?
+                    <a 
+                        href="https://aistudio.google.com/app/apikey" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="text-sky-600 hover:underline font-bold ml-1"
+                    >
+                        Tạo API Key mới tại đây
+                    </a>
+                </p>
+                 <p className="text-xs text-slate-500 mt-2">
                     Việc sử dụng API có thể phát sinh chi phí.
                     <a 
                         href="https://ai.google.dev/gemini-api/docs/billing" 
@@ -28,7 +39,7 @@ const ApiKeyPrompt: React.FC<ApiKeyPromptProps> = ({ onSelectKey }) => {
                         rel="noopener noreferrer" 
                         className="text-sky-600 hover:underline ml-1"
                     >
-                        Tìm hiểu thêm
+                        Tìm hiểu thêm về thanh toán
                     </a>
                 </p>
             </div>
