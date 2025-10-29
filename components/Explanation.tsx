@@ -20,9 +20,14 @@ const Explanation: React.FC<ExplanationProps> = ({ comparisonMode, onApiKeyError
     const [curvatureError, setCurvatureError] = useState<string | null>(null);
 
     const checkApiKeyError = (error: unknown) => {
-        if (error instanceof Error && (error.message.includes("API key not found") || error.message.includes("provide an API key"))) {
-            onApiKeyError();
-            return true;
+        if (error instanceof Error) {
+            const message = error.message.toLowerCase();
+            if (message.includes("api key not found") || 
+                message.includes("provide an api key") ||
+                message.includes("requested entity was not found")) {
+                onApiKeyError();
+                return true;
+            }
         }
         return false;
     }

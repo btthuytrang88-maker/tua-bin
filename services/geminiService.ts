@@ -1,12 +1,8 @@
 import { GoogleGenAI } from "@google/genai";
 
-let ai: GoogleGenAI;
-
 const getAiClient = () => {
-    if (!ai) {
-        ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
-    }
-    return ai;
+    // Luôn tạo một instance mới để đảm bảo sử dụng API key mới nhất đã chọn.
+    return new GoogleGenAI({ apiKey: process.env.API_KEY as string });
 }
 
 export const getWindPowerExplanation = async (): Promise<string> => {
