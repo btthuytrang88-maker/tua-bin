@@ -1,0 +1,5 @@
+{
+  "name": "Mô Hình Máy Phát Điện Gió",
+  "description": "Một ứng dụng web tương tác mô phỏng mô hình máy phát điện gió. Người dùng có thể điều chỉnh tốc độ gió và quan sát vòng quay của tua-bin, sản lượng điện, kèm theo giải thích được tạo bởi AI về các nguyên lý cơ bản.",
+  "requestFramePermissions": []
+}
