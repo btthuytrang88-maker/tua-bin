@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 interface PowerOutputProps {
@@ -12,7 +11,7 @@ const PowerOutput: React.FC<PowerOutputProps> = ({ powerOutput }) => {
                 Sản lượng điện
             </h2>
             <div className="text-3xl font-bold text-yellow-500 tracking-wider" style={{textShadow: '0 1px 2px rgba(0,0,0,0.1)'}}>
-                {powerOutput} <span className="text-xl font-normal text-yellow-500">%</span>
+                {powerOutput} <span className="text-xl font-normal text-yellow-500">kW</span>
             </div>
         </div>
     );

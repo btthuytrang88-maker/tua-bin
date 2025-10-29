@@ -25,10 +25,10 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
         if (speed === 0) {
             return { label: 'Lặng gió', className: 'text-slate-500' };
         }
-        if (speed <= 39) {
+        if (speed < 40) {
             return { label: 'Yếu', className: 'text-sky-600' };
         }
-        if (speed <= 79) {
+        if (speed < 80) {
             return { label: 'Trung bình', className: 'text-orange-500' };
         }
         return { label: 'Mạnh', className: 'text-red-600' };
@@ -57,7 +57,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             {comparisonMode === 'length' && (
                  <div>
                     <label htmlFor="blade-length" className="block mb-2 text-sm font-medium text-gray-600">
-                        Chiều dài cánh quạt
+                        Chiều dài cánh quạt (So sánh)
                     </label>
                     <input
                         id="blade-length"
@@ -75,7 +75,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             {comparisonMode === 'curvature' && (
                  <div>
                     <label htmlFor="blade-curvature" className="block mb-2 text-sm font-medium text-gray-600">
-                        Độ cong cánh quạt
+                        Độ cong cánh quạt (So sánh)
                     </label>
                     <input
                         id="blade-curvature"
@@ -91,6 +91,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
             )}
             
             <div className="border-t border-white/50 pt-4 space-y-2">
+                 <p className="text-sm font-medium text-gray-600">Chế độ so sánh</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <button
                         onClick={() => onComparisonModeChange('length')}
@@ -101,7 +102,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                         }`}
                         aria-live="polite"
                     >
-                        {comparisonMode === 'length' ? 'Ẩn So Sánh' : 'So Sánh Chiều Dài'}
+                        {comparisonMode === 'length' ? 'Tắt So Sánh' : 'Chiều Dài'}
                     </button>
                     <button
                         onClick={() => onComparisonModeChange('curvature')}
@@ -112,7 +113,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                         }`}
                         aria-live="polite"
                     >
-                        {comparisonMode === 'curvature' ? 'Ẩn So Sánh' : 'So Sánh Độ Cong'}
+                        {comparisonMode === 'curvature' ? 'Tắt So Sánh' : 'Độ Cong'}
                     </button>
                 </div>
                 <button

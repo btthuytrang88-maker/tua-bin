@@ -1,11 +1,12 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { getWindPowerExplanation, getBladeLengthExplanation, getBladeCurvatureExplanation } from '../services/geminiService.ts';
 
 interface ExplanationProps {
     comparisonMode: 'none' | 'length' | 'curvature';
+    onApiKeyError: () => void;
 }
 
-const Explanation: React.FC<ExplanationProps> = ({ comparisonMode }) => {
+const Explanation: React.FC<ExplanationProps> = ({ comparisonMode, onApiKeyError }) => {
     const [explanation, setExplanation] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
@@ -18,6 +19,13 @@ const Explanation: React.FC<ExplanationProps> = ({ comparisonMode }) => {
     const [isCurvatureLoading, setIsCurvatureLoading] = useState<boolean>(false);
     const [curvatureError, setCurvatureError] = useState<string | null>(null);
 
+    const checkApiKeyError = (error: unknown) => {
+        if (error instanceof Error && (error.message.includes("API key not found") || error.message.includes("provide an API key"))) {
+            onApiKeyError();
+            return true;
+        }
+        return false;
+    }
 
     const fetchExplanation = useCallback(async () => {
         setIsLoading(true);
@@ -27,12 +35,14 @@ const Explanation: React.FC<ExplanationProps> = ({ comparisonMode }) => {
             const result = await getWindPowerExplanation();
             setExplanation(result);
         } catch (err) {
-            setError('Không thể tải giải thích. Vui lòng thử lại.');
+            if (!checkApiKeyError(err)) {
+                setError('Không thể tải giải thích. Vui lòng thử lại.');
+            }
             console.error(err);
         } finally {
             setIsLoading(false);
         }
-    }, []);
+    }, [onApiKeyError]);
 
     const fetchBladeExplanation = useCallback(async () => {
         setIsBladeLoading(true);
@@ -42,12 +52,14 @@ const Explanation: React.FC<ExplanationProps> = ({ comparisonMode }) => {
             const result = await getBladeLengthExplanation();
             setBladeExplanation(result);
         } catch (err) {
-            setBladeError('Không thể tải giải thích. Vui lòng thử lại.');
+             if (!checkApiKeyError(err)) {
+                setBladeError('Không thể tải giải thích. Vui lòng thử lại.');
+            }
             console.error(err);
         } finally {
             setIsBladeLoading(false);
         }
-    }, []);
+    }, [onApiKeyError]);
 
     const fetchCurvatureExplanation = useCallback(async () => {
         setIsCurvatureLoading(true);
@@ -57,12 +69,14 @@ const Explanation: React.FC<ExplanationProps> = ({ comparisonMode }) => {
             const result = await getBladeCurvatureExplanation();
             setCurvatureExplanation(result);
         } catch (err) {
-            setCurvatureError('Không thể tải giải thích. Vui lòng thử lại.');
+            if (!checkApiKeyError(err)) {
+                setCurvatureError('Không thể tải giải thích. Vui lòng thử lại.');
+            }
             console.error(err);
         } finally {
             setIsCurvatureLoading(false);
         }
-    }, []);
+    }, [onApiKeyError]);
 
     const renderFormattedText = (text: string) => {
         return text.split('\n').map((paragraph, index) => {
@@ -81,24 +95,24 @@ const Explanation: React.FC<ExplanationProps> = ({ comparisonMode }) => {
 
     return (
         <div className="p-6 bg-white/50 rounded-2xl shadow-xl backdrop-blur-md border border-white/30 text-slate-700">
-            <h2 className="text-xl font-bold text-blue-700 mb-4 text-center">Cách Hoạt Động</h2>
+            <h2 className="text-xl font-bold text-blue-700 mb-4 text-center">Giải Thích Bằng AI</h2>
             
-            {/* Basic Explanation */}
+            {/* Giải thích cơ bản */}
             {!explanation && !isLoading && (
                 <div className="text-center">
-                    <p className="text-gray-600 mb-4">Nhấn nút bên dưới để tìm hiểu nguyên lý cơ bản của việc tạo ra điện từ gió.</p>
+                    <p className="text-gray-600 mb-4">Nhấn nút bên dưới để tìm hiểu nguyên lý tạo ra điện từ gió.</p>
                     <button
                         onClick={fetchExplanation}
                         className="bg-orange-500 hover:bg-orange-400 text-white font-bold py-2 px-4 rounded-lg transition duration-300 transform hover:scale-105"
                     >
-                        Tìm hiểu
+                        Nguyên lý cơ bản
                     </button>
                 </div>
             )}
             {isLoading && (
                  <div className="flex justify-center items-center">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                    <p className="ml-3 text-blue-700">Đang tải giải thích...</p>
+                    <p className="ml-3 text-blue-700">AI đang giải thích...</p>
                 </div>
             )}
             {error && <p className="text-red-600 text-center">{error}</p>}
@@ -108,14 +122,14 @@ const Explanation: React.FC<ExplanationProps> = ({ comparisonMode }) => {
                 </div>
             )}
 
-            {/* Dynamic explanation section */}
+            {/* Giải thích động */}
             {(comparisonMode !== 'none') && <hr className="my-6 border-t border-white/50" />}
 
             {comparisonMode === 'length' && (
                 <div>
                     {!bladeExplanation && !isBladeLoading && (
                          <div className="text-center">
-                            <p className="text-gray-600 mb-4">Tìm hiểu tại sao chiều dài cánh quạt lại quan trọng.</p>
+                            <p className="text-gray-600 mb-4">Tại sao chiều dài cánh quạt lại quan trọng?</p>
                             <button
                                 onClick={fetchBladeExplanation}
                                 className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded-lg transition duration-300 transform hover:scale-105"
@@ -166,9 +180,6 @@ const Explanation: React.FC<ExplanationProps> = ({ comparisonMode }) => {
                     )}
                 </div>
             )}
-             {comparisonMode === 'none' && (bladeExplanation || curvatureExplanation) && (
-                 <p className="text-center text-gray-600">Chọn một chế độ để bắt đầu so sánh.</p>
-             )}
         </div>
     );
 };
