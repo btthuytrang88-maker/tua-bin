@@ -1,9 +1,8 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import WindTurbine from './components/WindTurbine.tsx';
 import ControlPanel from './components/ControlPanel.tsx';
 import PowerOutput from './components/PowerOutput.tsx';
 import Explanation from './components/Explanation.tsx';
-import ApiKeyPrompt from './components/ApiKeyPrompt.tsx';
 
 type ComparisonMode = 'none' | 'length' | 'curvature';
 
@@ -13,40 +12,6 @@ const App: React.FC = () => {
     const [bladeCurvature, setBladeCurvature] = useState(50); // Độ cong cánh quạt (0-100)
     const [comparisonMode, setComparisonMode] = useState<ComparisonMode>('none');
     
-    const [isKeyReady, setIsKeyReady] = useState(false);
-    const [isCheckingKey, setIsCheckingKey] = useState(true);
-
-    useEffect(() => {
-        const checkKey = async () => {
-            try {
-                // Giả lập độ trễ để hiển thị màn hình loading
-                await new Promise(resolve => setTimeout(resolve, 500));
-                const hasKey = await window.aistudio.hasSelectedApiKey();
-                setIsKeyReady(hasKey);
-            } catch (error) {
-                console.error("Lỗi khi kiểm tra API key:", error);
-                setIsKeyReady(false);
-            } finally {
-                setIsCheckingKey(false);
-            }
-        };
-        checkKey();
-    }, []);
-
-    const handleSelectKey = async () => {
-        try {
-            await window.aistudio.openSelectKey();
-            // Giả định thành công sau khi mở hộp thoại để xử lý race condition
-            setIsKeyReady(true);
-        } catch (error) {
-            console.error("Lỗi khi mở hộp thoại chọn API key:", error);
-        }
-    };
-    
-    const handleApiKeyError = () => {
-        setIsKeyReady(false);
-    };
-
     const STANDARD_CURVATURE_FOR_COMPARISON = 0; // Phẳng
     const BASE_LENGTH_FOR_COMPARISON = 75; // Chiều dài cố định cho tua-bin đầu tiên khi so sánh chiều dài.
 
@@ -134,20 +99,6 @@ const App: React.FC = () => {
         });
     };
 
-    if (isCheckingKey) {
-        return (
-            <div className="min-h-screen bg-gradient-to-b from-cyan-300 to-sky-400 flex flex-col items-center justify-center p-4 font-sans text-slate-800">
-                <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-white"></div>
-                <p className="text-white text-lg mt-4">Đang kiểm tra API key...</p>
-            </div>
-        );
-    }
-
-    if (!isKeyReady) {
-        return <ApiKeyPrompt onSelectKey={handleSelectKey} />;
-    }
-
-
     return (
         <div className="min-h-screen bg-gradient-to-b from-cyan-300 to-sky-400 flex flex-col items-center justify-center p-4 font-sans text-slate-800">
             <header className="text-center mb-6">
@@ -212,7 +163,7 @@ const App: React.FC = () => {
                 </div>
 
                 <div className="lg:col-span-1">
-                  <Explanation comparisonMode={comparisonMode} onApiKeyError={handleApiKeyError} />
+                  <Explanation comparisonMode={comparisonMode} />
                 </div>
             </main>
 

@@ -3,10 +3,9 @@ import { getWindPowerExplanation, getBladeLengthExplanation, getBladeCurvatureEx
 
 interface ExplanationProps {
     comparisonMode: 'none' | 'length' | 'curvature';
-    onApiKeyError: () => void;
 }
 
-const Explanation: React.FC<ExplanationProps> = ({ comparisonMode, onApiKeyError }) => {
+const Explanation: React.FC<ExplanationProps> = ({ comparisonMode }) => {
     const [explanation, setExplanation] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
@@ -19,19 +18,6 @@ const Explanation: React.FC<ExplanationProps> = ({ comparisonMode, onApiKeyError
     const [isCurvatureLoading, setIsCurvatureLoading] = useState<boolean>(false);
     const [curvatureError, setCurvatureError] = useState<string | null>(null);
 
-    const checkApiKeyError = (error: unknown) => {
-        if (error instanceof Error) {
-            const message = error.message.toLowerCase();
-            if (message.includes("api key not found") || 
-                message.includes("provide an api key") ||
-                message.includes("requested entity was not found")) {
-                onApiKeyError();
-                return true;
-            }
-        }
-        return false;
-    }
-
     const fetchExplanation = useCallback(async () => {
         setIsLoading(true);
         setError(null);
@@ -40,14 +26,12 @@ const Explanation: React.FC<ExplanationProps> = ({ comparisonMode, onApiKeyError
             const result = await getWindPowerExplanation();
             setExplanation(result);
         } catch (err) {
-            if (!checkApiKeyError(err)) {
-                setError('Không thể tải giải thích. Vui lòng thử lại.');
-            }
+            setError('Không thể tải giải thích. Vui lòng thử lại.');
             console.error(err);
         } finally {
             setIsLoading(false);
         }
-    }, [onApiKeyError]);
+    }, []);
 
     const fetchBladeExplanation = useCallback(async () => {
         setIsBladeLoading(true);
@@ -57,14 +41,12 @@ const Explanation: React.FC<ExplanationProps> = ({ comparisonMode, onApiKeyError
             const result = await getBladeLengthExplanation();
             setBladeExplanation(result);
         } catch (err) {
-             if (!checkApiKeyError(err)) {
-                setBladeError('Không thể tải giải thích. Vui lòng thử lại.');
-            }
+            setBladeError('Không thể tải giải thích. Vui lòng thử lại.');
             console.error(err);
         } finally {
             setIsBladeLoading(false);
         }
-    }, [onApiKeyError]);
+    }, []);
 
     const fetchCurvatureExplanation = useCallback(async () => {
         setIsCurvatureLoading(true);
@@ -74,14 +56,12 @@ const Explanation: React.FC<ExplanationProps> = ({ comparisonMode, onApiKeyError
             const result = await getBladeCurvatureExplanation();
             setCurvatureExplanation(result);
         } catch (err) {
-            if (!checkApiKeyError(err)) {
-                setCurvatureError('Không thể tải giải thích. Vui lòng thử lại.');
-            }
+            setCurvatureError('Không thể tải giải thích. Vui lòng thử lại.');
             console.error(err);
         } finally {
             setIsCurvatureLoading(false);
         }
-    }, [onApiKeyError]);
+    }, []);
 
     const renderFormattedText = (text: string) => {
         return text.split('\n').map((paragraph, index) => {
